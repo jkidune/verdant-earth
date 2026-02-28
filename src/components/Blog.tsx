@@ -5,17 +5,19 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 
-// Define the shape of our post data
+// 1. Updated Interface to match the new 'blogs' table schema
 interface Post {
   id: string;
   title: string;
   slug: string;
   excerpt: string;
   category: string;
-  cover_image: string | null;
+  image_url: string | null; // Changed from cover_image
+  published_date: string;   // Added from new schema
 }
 
-const CATEGORIES = ['All', 'Conservation', 'Climate Change', 'Community'];
+// 2. Updated categories to match the data we seeded in Supabase
+const CATEGORIES = ['All', 'Community', 'Conservation', 'Climate Change', 'Education', 'Advocacy'];
 
 export default function Blog() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -23,41 +25,44 @@ export default function Blog() {
   const [isHeaderVisible, setIsHeaderVisible] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
 
-  // 1. Fetch posts from Supabase
+  // 3. Fetch posts from the correct 'blogs' table
   useEffect(() => {
     async function fetchPosts() {
       const { data, error } = await supabase
-        .from('posts')
+        .from('blogs') // Changed from 'posts'
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('published_date', { ascending: false }); // Ordered by date
       
       if (!error && data) {
         setPosts(data);
+      } else if (error) {
+        console.error("Error fetching blogs for homepage:", error.message);
       }
     }
     fetchPosts();
   }, []);
 
-  // 2. Scroll Animation Observer
+  // Scroll Animation Observer (Kept exactly as you designed it)
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // When the header comes into view, trigger the animation
         if (entry.isIntersecting) {
           setIsHeaderVisible(true);
         }
       },
-      { threshold: 0.5 } // Triggers when 50% of the header is visible
+      { threshold: 0.5 } 
     );
 
     if (headerRef.current) observer.observe(headerRef.current);
     return () => observer.disconnect();
   }, []);
 
-  // 3. Filter the posts based on the clicked category
-  const filteredPosts = activeCategory === 'All' 
-    ? posts 
-    : posts.filter(post => post.category === activeCategory);
+  // Filter the posts based on the clicked category, and ONLY keep the top 4
+  const filteredPosts = (
+    activeCategory === 'All' 
+      ? posts 
+      : posts.filter(post => post.category === activeCategory)
+  ).slice(0, 4);
 
   return (
     <section className="bg-white w-full flex flex-col items-center py-16 sm:py-24 px-6 sm:px-8">
@@ -69,7 +74,6 @@ export default function Blog() {
           className="w-full max-w-4xl mx-auto text-center flex flex-col gap-4"
         >
           <h2 className="text-4xl sm:text-5xl font-bold tracking-tight leading-tight">
-            {/* The grey text that animates to dark slate */}
             <span 
               className={`transition-colors duration-1000 ease-in-out ${
                 isHeaderVisible ? "text-slate-900" : "text-slate-400"
@@ -115,10 +119,10 @@ export default function Blog() {
             {filteredPosts.length > 0 ? (
               filteredPosts.map((post) => (
                 <article key={post.id} className="flex flex-col gap-4 group cursor-pointer">
-                  {/* Image */}
-                  <Link href={`/blog/${post.slug}`} className="relative w-full h-64 rounded-lg overflow-hidden">
+                  {/* Image - Updated to use image_url */}
+                  <Link href={`/blog/${post.slug}`} className="relative w-full h-64 rounded-lg overflow-hidden bg-slate-100">
                     <Image
-                      src={post.cover_image || '/forest-bg.jpg'}
+                      src={post.image_url || '/placeholder.jpg'}
                       alt={post.title}
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -131,7 +135,7 @@ export default function Blog() {
                       {post.category}
                     </span>
                     <Link href={`/blog/${post.slug}`}>
-                      <h3 className="text-2xl font-bold text-slate-900 leading-snug group-hover:text-green-800 transition-colors">
+                      <h3 className="text-2xl font-bold text-slate-900 leading-snug group-hover:text-green-800 transition-colors line-clamp-2">
                         {post.title}
                       </h3>
                     </Link>
