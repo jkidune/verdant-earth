@@ -39,7 +39,13 @@ export default function Footer() {
               Platform
             </h4>
             <ul className="flex flex-col gap-2">
-              {/* Added the Style Guide Link here */}
+              {/* Added Careers Link here */}
+              <li>
+                <Link href="/careers" className="text-base font-normal text-slate-500 hover:text-green-800 transition-colors">
+                  Careers
+                </Link>
+              </li>
+              {/* Style Guide Link */}
               <li>
                 <Link href="/style-guide" className="text-base font-normal text-slate-500 hover:text-green-800 transition-colors">
                   Style Guide
