@@ -48,24 +48,20 @@ export default function Hero() {
   }, [next]);
 
   return (
-    <section className="relative h-screen min-h-[640px] overflow-hidden">
+    <section
+      style={{ height: "100vh", minHeight: "640px" }}
+      className="relative overflow-hidden"
+    >
 
-      {/* Background slides */}
+      {/* Background slides using CSS background-image */}
       {slides.map((slide, i) => (
         <div
           key={i}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
+          style={{ backgroundImage: `url('${slide.image}')` }}
+          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ${
             i === current ? "opacity-100" : "opacity-0"
           }`}
-        >
-          <img
-            src={slide.image}
-            alt={slide.label}
-            className={`w-full h-full object-cover transition-transform duration-[8000ms] ${
-              i === current ? "scale-100" : "scale-105"
-            }`}
-          />
-        </div>
+        />
       ))}
 
       {/* Gradient overlays */}
