@@ -32,3 +32,18 @@ body {
 .font-display {
   font-family: 'Cormorant Garamond', Georgia, serif;
 }
+/* Global Cursor Styles */
+a, 
+button, 
+[role="button"],
+input[type="submit"],
+input[type="button"],
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+/* Optional: Ensure disabled items show the 'not-allowed' cursor */
+button:disabled,
+input:disabled {
+  cursor: not-allowed !important;
+}
