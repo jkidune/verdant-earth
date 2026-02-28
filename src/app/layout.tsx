@@ -37,6 +37,7 @@ export default function RootLayout({
         </div>
         
         <Footer /> {/* 2. Place it here! */}
+        <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
       </body>
     </html>
   );
