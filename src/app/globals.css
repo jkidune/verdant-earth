@@ -2,8 +2,86 @@
 
 @import "tailwindcss";
 
-/* Tailwind config path for Tailwind CSS v4 */
-/* @config is not valid CSS; remove or move to build config */
+/* ─────────────────────────────────────────────────────────
+   TAILWIND v4 THEME — single source of truth
+   All tokens are available as Tailwind utility classes:
+   bg-teal, text-green, border-border, shadow-card, etc.
+   ───────────────────────────────────────────────────────── */
+@theme {
+  /* ── Fonts ── */
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-sans:    'DM Sans', system-ui, sans-serif;
+
+  /* ── Brand colours ── */
+  --color-teal:         #19474E;   /* Primary — nav, headings, dark bg    */
+  --color-teal-dark:    #0f2d32;   /* Hover / footer                       */
+  --color-teal-mid:     #235a63;   /* Mid border / ring                    */
+  --color-green:        #166534;   /* Accent — CTAs, highlights            */
+  --color-green-light:  #22863a;   /* Green hover                          */
+  --color-sage:         #4a7c59;   /* Labels, tags, eyebrows               */
+
+  /* ── Neutrals ── */
+  --color-background:   #F7F7F5;   /* Page background                      */
+  --color-surface:      #FFFFFF;   /* Cards, panels                        */
+  --color-surface-alt:  #EFF5F0;   /* Subtle green-tinted panels           */
+  --color-border:       #DDE5DE;   /* Dividers, card borders               */
+  --color-border-dark:  #C2D0C4;   /* Stronger dividers                    */
+
+  /* ── Text ── */
+  --color-ink:          #1a2e1e;   /* Body text                            */
+  --color-muted:        #5D6A62;   /* Secondary / caption                  */
+  --color-faint:        #8E9E91;   /* Placeholder, disabled                */
+
+  /* ── Border radius — one consistent scale ── */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-pill: 9999px;
+
+  /* ── Shadows (teal-tinted) ── */
+  --shadow-sm:   0 1px 3px rgba(25,71,78,0.06), 0 1px 2px rgba(25,71,78,0.04);
+  --shadow-card: 0 4px 16px rgba(25,71,78,0.08), 0 2px 6px rgba(25,71,78,0.05);
+  --shadow-lg:   0 12px 40px rgba(25,71,78,0.12), 0 4px 12px rgba(25,71,78,0.06);
+  --shadow-xl:   0 24px 64px rgba(25,71,78,0.15);
+
+  /* ── Letter spacing ── */
+  --tracking-ultra:  0.3em;
+  --tracking-widest: 0.2em;
+  --tracking-wider:  0.15em;
+  --tracking-wide:   0.08em;
+
+  /* ── Transitions ── */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-expo:  cubic-bezier(0.7, 0, 0.84, 0);
+  --duration-fast: 150ms;
+  --duration:      220ms;
+  --duration-slow: 400ms;
+
+  /* ── Animations ── */
+  --animate-fade-up:  fadeUp 0.7s var(--ease-out-expo) both;
+  --animate-fade-in:  fadeIn 0.5s ease both;
+  --animate-slide-in: slideIn 0.6s var(--ease-out-expo) both;
+}
+
+/* ── Keyframes ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ─────────────────────────────────────────────────────────
+   BASE — builds on your existing reset, adds only what's
+   missing
+   ───────────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -23,18 +101,26 @@ html {
 
 body {
   font-family: 'DM Sans', system-ui, sans-serif;
-  background-color: #fafaf8;
-  color: #1a1a18;
+  background-color: var(--color-background);
+  color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.65;
 }
 
+img, video {
+  display: block;
+  max-width: 100%;
+}
+
+/* ── Your existing helpers (kept exactly) ── */
 .font-display {
   font-family: 'Cormorant Garamond', Georgia, serif;
 }
-/* Global Cursor Styles */
-a, 
-button, 
+
+/* ── Cursor rules (kept exactly) ── */
+a,
+button,
 [role="button"],
 input[type="submit"],
 input[type="button"],
@@ -42,8 +128,177 @@ input[type="button"],
   cursor: pointer !important;
 }
 
-/* Optional: Ensure disabled items show the 'not-allowed' cursor */
 button:disabled,
 input:disabled {
   cursor: not-allowed !important;
+}
+
+/* ─────────────────────────────────────────────────────────
+   TYPOGRAPHY HELPERS
+   ───────────────────────────────────────────────────────── */
+
+/* Eyebrow — small label above section headings */
+.eyebrow {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-sage);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.eyebrow::before {
+  content: '';
+  display: block;
+  width: 2rem;
+  height: 1px;
+  background: var(--color-sage);
+  flex-shrink: 0;
+}
+
+/* Section heading */
+.section-heading {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: var(--color-teal);
+}
+
+/* Lead / intro paragraph */
+.lead {
+  font-size: 1.125rem;
+  font-weight: 300;
+  color: var(--color-muted);
+  line-height: 1.7;
+}
+
+/* ─────────────────────────────────────────────────────────
+   BUTTON SYSTEM — 3 variants, consistent across all pages
+   ───────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  padding: 0.875rem 1.75rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: background-color var(--duration) var(--ease-out-expo),
+              color var(--duration) var(--ease-out-expo),
+              border-color var(--duration) var(--ease-out-expo),
+              transform var(--duration) var(--ease-out-expo),
+              box-shadow var(--duration) var(--ease-out-expo);
+  white-space: nowrap;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+
+/* Primary — teal fill */
+.btn-primary {
+  background-color: var(--color-teal);
+  color: #fff;
+  border-color: var(--color-teal);
+}
+.btn-primary:hover {
+  background-color: var(--color-teal-dark);
+  border-color: var(--color-teal-dark);
+}
+
+/* Secondary — teal outline */
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-teal);
+  border-color: var(--color-teal);
+}
+.btn-secondary:hover {
+  background-color: var(--color-teal);
+  color: #fff;
+}
+
+/* Ghost — white outline (hero / dark backgrounds only) */
+.btn-ghost {
+  background-color: transparent;
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.45);
+}
+.btn-ghost:hover {
+  border-color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Size modifier */
+.btn-sm {
+  font-size: 0.625rem;
+  padding: 0.6rem 1.25rem;
+}
+
+/* ─────────────────────────────────────────────────────────
+   CARD
+   ───────────────────────────────────────────────────────── */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--duration) var(--ease-out-expo),
+              transform var(--duration) var(--ease-out-expo);
+}
+.card:hover {
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
+}
+
+/* ─────────────────────────────────────────────────────────
+   LAYOUT HELPERS
+   ───────────────────────────────────────────────────────── */
+
+/* Max-width container */
+.container-wide {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 2rem;
+}
+@media (max-width: 768px) {
+  .container-wide { padding-inline: 1.5rem; }
+}
+
+/* Section vertical rhythm */
+.section-pad   { padding-block: 6rem; }
+.section-pad-sm{ padding-block: 4rem; }
+@media (max-width: 768px) {
+  .section-pad    { padding-block: 4rem; }
+  .section-pad-sm { padding-block: 2.5rem; }
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCROLLBAR
+   ───────────────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 5px; }
+::-webkit-scrollbar-track  { background: var(--color-background); }
+::-webkit-scrollbar-thumb  { background: var(--color-teal-mid); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-teal); }
+
+/* ─────────────────────────────────────────────────────────
+   FOCUS & SELECTION
+   ───────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+::selection {
+  background: rgba(25, 71, 78, 0.15);
+  color: var(--color-teal-dark);
 }

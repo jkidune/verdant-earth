@@ -2,16 +2,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 
-// 1. Updated Interface to include the slug
 interface Event {
   id: string;
   title: string;
   date: string;
-  slug: string; // Changed from link to slug
+  slug: string;
 }
 
 export default async function Events() {
-  // Fetch live data from Supabase, ensuring we get the slug
   const { data: events, error } = await supabase
     .from('events')
     .select('id, title, date, slug')
@@ -21,7 +19,6 @@ export default async function Events() {
     console.error('Error fetching events:', error.message);
   }
 
-  // 2. Updated Fallback data with valid slugs
   const fallbackEvents: Event[] = [
     { id: '1', title: 'Community Reforestation Drive', date: 'Oct 14', slug: 'reforestation-drive' },
     { id: '2', title: 'Sustainable Agriculture Seminar', date: 'Nov 02', slug: 'agriculture-seminar' },
@@ -44,54 +41,54 @@ export default async function Events() {
         />
       </div>
 
-      {/* Dark Green Overlay */}
-      <div className="absolute inset-0 bg-green-800/80 z-10"></div>
+      {/* Teal dark overlay — consistent with hero */}
+      <div className="absolute inset-0 bg-teal-dark/85 z-10" />
 
-      {/* Main Content Container */}
-      <div className="relative z-20 w-full max-w-7xl px-6 sm:px-8 flex flex-col lg:flex-row gap-16 items-center">
+      {/* Content */}
+      <div className="relative z-20 w-full max-w-[1280px] px-6 sm:px-8 flex flex-col lg:flex-row gap-16 items-center">
         
-        {/* Left Column: Heading & Button */}
-        <div className="flex flex-col gap-6 flex-1 w-full text-white">
-          <span className="text-base font-semibold tracking-wide uppercase opacity-80">
-            // Upcoming Events
-          </span>
-          <h2 className="font-['Zodiak'] text-4xl lg:text-6xl font-bold leading-tight tracking-tight">
+        {/* Left — Heading & CTA */}
+        <div className="flex flex-col gap-5 flex-1 w-full text-white">
+          <p className="eyebrow text-white/60" style={{ color: 'rgba(255,255,255,0.55)' }}>
+            <span style={{ background: 'rgba(255,255,255,0.25)', height: '1px', display: 'inline-block', width: '2rem', marginRight: '0.75rem', verticalAlign: 'middle' }} />
+            Upcoming Events
+          </p>
+          <h2 className="font-display text-4xl lg:text-6xl font-semibold leading-[1] tracking-tight text-white">
             Earth Guardians Summit: Innovations for a Sustainable Future
           </h2>
           <div>
             <Link 
               href="/events" 
-              className="inline-flex items-center justify-center px-8 py-4 bg-white text-green-900 font-bold text-sm rounded-full transition-all duration-300 hover:scale-105 hover:bg-emerald-50 shadow-xl"
+              className="btn btn-ghost"
             >
               View All Events
             </Link>
           </div>
         </div>
 
-        {/* Right Column: Interactive Event List */}
-        <div className="flex flex-col flex-1 w-full bg-white/5 backdrop-blur-sm rounded-2xl p-4 md:p-8 border border-white/10">
+        {/* Right — Event list */}
+        <div className="flex flex-col flex-1 w-full bg-white/5 backdrop-blur-sm rounded-lg p-4 md:p-8 border border-white/10">
           {displayEvents.map((event) => (
             <Link 
-              // 3. UPDATED LINK: Points to the dynamic individual event page
               href={`/events/${event.slug}`} 
               key={event.id}
-              className="group flex flex-row justify-between items-center py-6 border-b border-white/20 last:border-0 transition-all duration-300 hover:pl-4"
+              className="group flex flex-row justify-between items-center py-5 border-b border-white/15 last:border-0 transition-all duration-300 hover:pl-3"
             >
-              <div className="flex items-center gap-4">
-                {/* Lively Hover Arrow */}
+              <div className="flex items-center gap-3">
                 <svg 
-                  className="w-5 h-5 text-emerald-400 opacity-0 -ml-6 group-hover:opacity-100 group-hover:ml-0 transition-all duration-400 ease-out" 
+                  className="w-4 h-4 text-sage opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" 
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
                 </svg>
-                <span className="text-xl font-medium text-white group-hover:text-emerald-300 transition-colors">
+                <span className="text-base font-normal text-white/85 group-hover:text-white transition-colors font-light">
                   {event.title}
                 </span>
               </div>
-              <span className="text-base font-bold text-emerald-400 bg-white/10 px-4 py-1 rounded-full whitespace-nowrap ml-4">
+              {/* Date pill */}
+              <span className="font-display text-base font-semibold text-white bg-white/10 border border-white/15 px-4 py-1 rounded-pill whitespace-nowrap ml-4">
                 {event.date}
               </span>
             </Link>

@@ -27,30 +27,35 @@ export default function Stats() {
   ];
 
   return (
-    <section className="bg-white py-16 sm:py-24 border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+    <section className="bg-surface py-16 sm:py-24 border-b border-border">
+      <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
+
+        {/* Section header */}
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <p className="eyebrow justify-center mb-3">Our Impact</p>
+          <h2 className="section-heading mb-4">
             Our Measurable Impact
           </h2>
-          <p className="mt-4 text-xl text-gray-500">
+          <p className="lead text-base">
             Real change happens on the ground. Here is what we have achieved by working hand-in-hand with local communities.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Stats grid */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {impactStats.map((stat) => (
             <div 
               key={stat.id} 
-              className="bg-emerald-50 rounded-2xl p-8 text-center border border-emerald-100 shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
+              className="bg-surface-alt rounded-lg p-8 text-center border border-border shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-card"
             >
-              <div className="text-4xl font-extrabold text-emerald-600 mb-2">
+              {/* Number — Cormorant Garamond, editorial */}
+              <div className="font-display text-5xl font-semibold text-teal mb-1 leading-none">
                 {stat.value}
               </div>
-              <div className="text-lg font-bold text-gray-900 mb-2">
+              <div className="text-[0.7rem] tracking-[0.18em] uppercase font-medium text-ink mt-3 mb-2">
                 {stat.name}
               </div>
-              <div className="text-sm text-gray-600 leading-relaxed">
+              <div className="text-xs text-muted leading-relaxed">
                 {stat.description}
               </div>
             </div>

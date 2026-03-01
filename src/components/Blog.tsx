@@ -5,18 +5,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 
-// 1. Updated Interface to match the new 'blogs' table schema
 interface Post {
   id: string;
   title: string;
   slug: string;
   excerpt: string;
   category: string;
-  image_url: string | null; // Changed from cover_image
-  published_date: string;   // Added from new schema
+  image_url: string | null;
+  published_date: string;
 }
 
-// 2. Updated categories to match the data we seeded in Supabase
 const CATEGORIES = ['All', 'Community', 'Conservation', 'Climate Change', 'Education', 'Advocacy'];
 
 export default function Blog() {
@@ -25,13 +23,12 @@ export default function Blog() {
   const [isHeaderVisible, setIsHeaderVisible] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
 
-  // 3. Fetch posts from the correct 'blogs' table
   useEffect(() => {
     async function fetchPosts() {
       const { data, error } = await supabase
-        .from('blogs') // Changed from 'posts'
+        .from('blogs')
         .select('*')
-        .order('published_date', { ascending: false }); // Ordered by date
+        .order('published_date', { ascending: false });
       
       if (!error && data) {
         setPosts(data);
@@ -42,22 +39,17 @@ export default function Blog() {
     fetchPosts();
   }, []);
 
-  // Scroll Animation Observer (Kept exactly as you designed it)
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsHeaderVisible(true);
-        }
+        if (entry.isIntersecting) setIsHeaderVisible(true);
       },
       { threshold: 0.5 } 
     );
-
     if (headerRef.current) observer.observe(headerRef.current);
     return () => observer.disconnect();
   }, []);
 
-  // Filter the posts based on the clicked category, and ONLY keep the top 4
   const filteredPosts = (
     activeCategory === 'All' 
       ? posts 
@@ -65,46 +57,47 @@ export default function Blog() {
   ).slice(0, 4);
 
   return (
-    <section className="bg-white w-full flex flex-col items-center py-16 sm:py-24 px-6 sm:px-8">
-      <div className="w-full max-w-7xl flex flex-col gap-16">
+    <section className="bg-surface w-full flex flex-col items-center py-16 sm:py-24 px-6 sm:px-8">
+      <div className="w-full max-w-[1280px] flex flex-col gap-16">
         
-        {/* Animated Header Section */}
+        {/* Animated heading */}
         <div 
           ref={headerRef}
-          className="w-full max-w-4xl mx-auto text-center flex flex-col gap-4"
+          className="w-full max-w-3xl mx-auto text-center flex flex-col gap-3"
         >
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight leading-tight">
+          <p className="eyebrow justify-center">From the Field</p>
+          <h2 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05]">
             <span 
               className={`transition-colors duration-1000 ease-in-out ${
-                isHeaderVisible ? "text-slate-900" : "text-slate-400"
+                isHeaderVisible ? "text-teal" : "text-border-dark"
               }`}
             >
-              Stories from the field. 
+              Stories from the field.{' '}
             </span>
             <br />
-            <span className="text-slate-900">
+            <span className="text-teal">
               Insights, updates, and impact.
             </span>
           </h2>
         </div>
 
-        {/* Main Content Layout (Sidebar + Grid) */}
+        {/* Sidebar + Grid */}
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
           
-          {/* Left Aside: Categories */}
-          <aside className="w-full lg:w-64 flex-shrink-0">
-            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-6">
+          {/* Categories sidebar */}
+          <aside className="w-full lg:w-56 flex-shrink-0">
+            <h3 className="text-[0.65rem] tracking-[0.2em] uppercase font-medium text-muted mb-5">
               Categories
             </h3>
-            <ul className="flex flex-row lg:flex-col gap-4 overflow-x-auto pb-4 lg:pb-0">
+            <ul className="flex flex-row lg:flex-col gap-3 overflow-x-auto pb-4 lg:pb-0">
               {CATEGORIES.map((category) => (
                 <li key={category}>
                   <button
                     onClick={() => setActiveCategory(category)}
-                    className={`text-lg transition-all duration-300 whitespace-nowrap ${
+                    className={`font-display text-lg transition-all duration-200 whitespace-nowrap ${
                       activeCategory === category
-                        ? "text-green-800 font-bold border-b-2 border-green-800 pb-1"
-                        : "text-slate-500 hover:text-slate-900 font-normal"
+                        ? "text-teal font-semibold border-b border-teal pb-0.5"
+                        : "text-muted hover:text-ink font-normal"
                     }`}
                   >
                     {category === 'All' ? 'Latest' : category}
@@ -114,13 +107,13 @@ export default function Blog() {
             </ul>
           </aside>
 
-          {/* Right Grid: Articles */}
+          {/* Articles grid */}
           <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
             {filteredPosts.length > 0 ? (
               filteredPosts.map((post) => (
                 <article key={post.id} className="flex flex-col gap-4 group cursor-pointer">
-                  {/* Image - Updated to use image_url */}
-                  <Link href={`/blog/${post.slug}`} className="relative w-full h-64 rounded-lg overflow-hidden bg-slate-100">
+                  {/* Image */}
+                  <Link href={`/blog/${post.slug}`} className="relative w-full h-56 rounded-lg overflow-hidden bg-surface-alt">
                     <Image
                       src={post.image_url || '/placeholder.jpg'}
                       alt={post.title}
@@ -131,28 +124,29 @@ export default function Blog() {
                   
                   {/* Content */}
                   <div className="flex flex-col gap-2">
-                    <span className="text-sm font-semibold text-green-700">
+                    {/* Category tag */}
+                    <span className="text-[0.65rem] tracking-[0.18em] uppercase font-medium text-sage">
                       {post.category}
                     </span>
                     <Link href={`/blog/${post.slug}`}>
-                      <h3 className="text-2xl font-bold text-slate-900 leading-snug group-hover:text-green-800 transition-colors line-clamp-2">
+                      <h3 className="font-display text-2xl font-semibold text-teal leading-snug group-hover:text-teal-mid transition-colors line-clamp-2">
                         {post.title}
                       </h3>
                     </Link>
-                    <p className="text-sm text-slate-600 leading-relaxed line-clamp-2">
+                    <p className="text-xs text-muted leading-relaxed line-clamp-2 font-light">
                       {post.excerpt}
                     </p>
                     <Link 
                       href={`/blog/${post.slug}`}
-                      className="text-sm font-bold text-green-800 mt-2 inline-flex items-center gap-1 group-hover:gap-2 transition-all"
+                      className="text-[0.7rem] tracking-[0.15em] uppercase font-medium text-green mt-2 inline-flex items-center gap-1.5 group-hover:gap-2.5 transition-all"
                     >
-                      Read Article <span aria-hidden="true">&rarr;</span>
+                      Read Article <span aria-hidden="true">→</span>
                     </Link>
                   </div>
                 </article>
               ))
             ) : (
-              <p className="text-slate-500 col-span-2 py-10">
+              <p className="text-muted text-sm col-span-2 py-10">
                 No posts found in this category yet.
               </p>
             )}
